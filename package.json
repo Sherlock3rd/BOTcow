@@ -1,0 +1,26 @@
+{
+  "name": "botcow-feishu-codex-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bridge:start": "powershell -ExecutionPolicy Bypass -File ./scripts/start-bridge.ps1",
+    "bridge:stop": "powershell -ExecutionPolicy Bypass -File ./scripts/stop-bridge.ps1",
+    "bridge:status": "powershell -ExecutionPolicy Bypass -File ./scripts/status-bridge.ps1",
+    "bridge:fetch-images": "node ./scripts/fetch-message-images.mjs",
+    "bridge:reaction": "node ./scripts/bridge-reaction.mjs",
+    "bridge:wakeup": "node ./scripts/codex-event-wakeup.mjs",
+    "knowledge:lingo": "node ./scripts/lingo-knowledge.mjs",
+    "schedule:create": "node ./scripts/create-schedule-requirement.mjs",
+    "schedule:overdue": "node ./scripts/list-overdue-requirements.mjs",
+    "schedule:alert-day": "node ./scripts/is-overdue-alert-day.mjs",
+    "queue:pending": "node ./scripts/bridge-queue.mjs pending",
+    "queue:status": "node ./scripts/bridge-queue.mjs status",
+    "test": "node --test scripts/*.test.mjs",
+    "test:memory": "node --test scripts/memory-architecture.test.mjs scripts/conversation-modes.test.mjs",
+    "check:memory-model": "node scripts/check-chat-routing.mjs --live --memory"
+  },
+  "engines": {
+    "node": ">=22.17.1 <23"
+  }
+}

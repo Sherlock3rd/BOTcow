@@ -1,0 +1,62 @@
+{
+  "profile": "botCow",
+  "chat_model": "gpt-5.6-luna",
+  "chat_reasoning_effort": "low",
+  "event_key": "im.message.receive_v1",
+  "allowed_sender_ids": [],
+  "allowed_chat_types": [
+    "p2p",
+    "group"
+  ],
+  "allowed_group_chat_ids": [],
+  "bot_open_id": "",
+  "allowed_message_types": [
+    "text",
+    "post",
+    "image"
+  ],
+  "reaction_types": {
+    "processing": "OnIt",
+    "done": "DONE"
+  },
+  "bot_name": "botCow",
+  "sync_target": "scoped_task_threads",
+  "event_wakeup": {
+    "enabled": false,
+    "thread_id": null,
+    "thread_started_at": null,
+    "rotation_days": 30,
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "handoff_path": "session/codex-event-thread-handoff.md",
+    "retry_delay_ms": 15000,
+    "disabled_mcp_servers": [
+      "unityMCP"
+    ]
+  },
+  "memory": {
+    "enabled": true,
+    "read_enabled": true,
+    "write_enabled": true,
+    "task_isolation": true,
+    "automatic_candidates": false
+  },
+  "group_public": {
+    "enabled": false,
+    "enabled_at": null,
+    "max_input_chars": 4000,
+    "per_user_minute": 6,
+    "per_user_hour": 30,
+    "per_group_hour": 60,
+    "total_hour": 100
+  },
+  "risk_control": {
+    "enabled": true,
+    "max_input_chars": 12000
+  },
+  "auto_group_admission": {
+    "enabled": false,
+    "app_id": "",
+    "enabled_at": null
+  }
+}

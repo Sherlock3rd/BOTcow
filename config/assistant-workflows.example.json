@@ -1,0 +1,84 @@
+{
+  "configuration": {
+    "project_root": "D:\\example\\cousin",
+    "skill": "D:\\example\\cousin\\SKILL.md"
+  },
+  "scheduling": {
+    "url": "",
+    "base_token": "",
+    "table_id": "",
+    "view_id": "",
+    "view_name": "状态看板",
+    "fields": {
+      "task": "Task",
+      "status": "当前状态",
+      "owners": "当前对接人",
+      "status_note": "状态备注",
+      "start_date": "开始时间",
+      "next_check_date": "下次check时间",
+      "departments": "当前关联部门",
+      "plan_link": "策划案",
+      "overdue": "Overdue",
+      "end_date": "End Date",
+      "priority": "优先级"
+    },
+    "status_options": [
+      "待进行",
+      "正在进行中",
+      "进行中，等待结论",
+      "已完成"
+    ],
+    "priority_options": [
+      "P0",
+      "P1",
+      "P2"
+    ],
+    "department_options": [
+      "UI",
+      "程序",
+      "hdy",
+      "策划组内",
+      "PM"
+    ]
+  },
+  "workbench": {
+    "project_root": "D:\\example\\Workbencch",
+    "skills_root": "D:\\example\\Workbencch\\.cursor\\skills",
+    "allow_all_formal_skills": true,
+    "exclude_paths_containing": [
+      "\\tmp\\"
+    ]
+  },
+  "dobe_bugs": {
+    "enabled": false,
+    "url": "https://project.feishu.cn/dobe/issue/homepage",
+    "simple_name": "dobe",
+    "type_key": "issue",
+    "excluded_status_key": "CLOSED",
+    "excluded_status_name": "已关闭",
+    "scope": "related_to_current_user",
+    "expected_user_email": "",
+    "cli_executable": ""
+  },
+  "personal_tasks": {
+    "enabled": false,
+    "profile": "botCow",
+    "expected_user_open_id": "",
+    "scope": "assigned_to_me_incomplete"
+  },
+  "overdue_alert": {
+    "timezone": "Asia/Shanghai",
+    "time": "10:00",
+    "weekdays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "chat_id": "",
+    "profile": "botCow",
+    "holiday_calendar": "config/cn-holidays-2026.json",
+    "send_when_empty": true
+  }
+}

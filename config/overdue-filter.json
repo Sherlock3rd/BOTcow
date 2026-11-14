@@ -1,0 +1,10 @@
+{
+  "logic": "and",
+  "conditions": [
+    [
+      "Overdue",
+      "==",
+      "🚨 Overdue"
+    ]
+  ]
+}

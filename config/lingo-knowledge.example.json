@@ -1,0 +1,9 @@
+{
+  "profile": "botCow",
+  "identity": "user",
+  "app_id": "",
+  "repo_id": "",
+  "repo_name": "",
+  "required_scope": "baike:entity:readonly",
+  "read_only": true
+}

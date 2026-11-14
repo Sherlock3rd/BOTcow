@@ -1,0 +1,27 @@
+{
+  "development": [
+    {"id":"known_location","history":[{"user":"书评草稿在“随笔”页，已经发出的书评在“归档”页。","reply":"知道了，两个页按发布状态分。"}],"turns":[{"question":"我只找已经发出的那些，哪一页？","must_match":"归档","max_chars":45,"no_question":true,"dimensions":["context_fit","pacing"],"expectation":"直接答已给的页名，不重新介绍两页或让用户发文档"}]},
+    {"id":"one_missing_item","turns":[{"question":"我把三段介绍都发你了吧？","must_match":"没|未|看不到|不确定|没有","must_not_match":"都收|三段.*齐|已收到","max_chars":80,"dimensions":["fact_grounding"],"expectation":"当前无材料就指出缺口，不默认已经收到"}]},
+    {"id":"concrete_disagreement","turns":[{"question":"按钮只放得下四个字，我想写“点击立即开始阅读”，你看行吗？","must_match":"长|四|超|放不下|不行|不太","no_question":true,"max_chars":100,"dimensions":["context_fit","naturalness"],"expectation":"给具体判断和长度原因，不盲目赞同或全面评审"},{"question":"那就用“开始阅读”，不用再想其他的了","no_question":true,"max_chars":45,"must_not_match":"还可以|或者|另外|建议","dimensions":["pacing","preference_adaptation"],"expectation":"接受已作选择并收口，不继续给备选"}]},
+    {"id":"scope_correction","history":[{"user":"这两张图都太暗了","reply":"那两张背景都得调亮。"}],"turns":[{"question":"我只是评价人物脸上的光，不是要改图，也没说背景。","no_question":true,"must_match":"脸|人物|背景|我|光","must_not_match":"背景也|整体.*调亮|已经改","max_chars":70,"dimensions":["repair","reference_resolution"],"expectation":"明确为聊天评价时修正理解；原题含修改指令歧义，已留存"}]},
+    {"id":"uncertainty_split","history":[{"user":"展厅确定周五开门，具体几点还没定。","reply":"日期定了，时间还在等。"}],"turns":[{"question":"那就是周五上午十点？","no_question":true,"must_match":"没定|未定|不确定|还没|不能确定","must_not_match":"^是的|^没错|已经定为十点","max_chars":80,"dimensions":["fact_grounding"],"expectation":"保留日期已知、时刻未知的区别；不以贪婪正则误匹配否定句"}]},
+    {"id":"small_response","history":[{"user":"排了半天队，终于轮到我，结果电影票刚卖完","reply":"偏偏就卡在你这儿。"}],"turns":[{"question":"最气的是我前面那个人买了最后两张","no_question":true,"max_chars":70,"must_not_match":"咋啦|喝水|休息|首先|以下","dimensions":["context_fit","naturalness"],"expectation":"顺着新增反差简短接话，不再问原因或安排生活"}]},
+    {"id":"formal_work_kept","turns":[{"question":"正式需求：为活动规则写一份完整说明并保存到指定文档。","kinds":["task"],"dimensions":["mode_accuracy"],"expectation":"简短风格不替代正式工作分流"}]}
+  ],
+  "final_checks": [
+    {"id":"current_context_not_memory","history":[{"user":"预约号在短信，地址和路线在邮件里。","reply":"好，两处材料分开存了。"}],"turns":[{"question":"地址在哪来着","no_question":true,"must_match":"邮件","max_chars":45,"dimensions":["context_fit","mode_accuracy"],"expectation":"直接读眼前历史，不误转长期记忆"}]},
+    {"id":"explicit_memory_kept","turns":[{"question":"帮我列出你保存的长期记忆","kinds":["memory"],"dimensions":["mode_accuracy"],"expectation":"真正的长期记忆请求仍走记忆通道"}]},
+    {"id":"new_choice_no_extra","turns":[{"question":"两句欢迎语：“终于等到你”和“欢迎光临”。我想亲切一点，选哪个？只选，不扩写。","must_match":"终于等到你|第一|前者","no_question":true,"max_chars":70,"must_not_match":"还可以|改成|或者","dimensions":["context_fit","pacing"],"expectation":"按给定偏好作轻量选择，不扩展交付"}]},
+    {"id":"no_unprovided_consequence","history":[{"user":"你这会儿在忙啥","reply":"在这儿回你的消息，你呢？"}],"turns":[{"question":"在给整理箱装盖子，卡扣老扣不上","no_question":true,"max_chars":80,"must_not_match":"全部|全拆|坏了|变形|先把|建议|试试|换一个","dimensions":["context_fit","fact_grounding","agency"],"expectation":"接住回答，不诊断故障、安排修理或编造后果"}]},
+    {"id":"negative_fact_is_not_repetition","history":[{"user":"今天把那本厚书看完了","reply":"通宵看完不容易。"}],"turns":[{"question":"我分一个月看的，又没熬夜","no_question":true,"max_chars":70,"must_not_match":"通宵.*辛苦|熬夜.*累|补觉","dimensions":["repair","fact_grounding"],"expectation":"撤回错误假定，可否定性提及旧说法，不把提词本身当失败"}]},
+    {"id":"end_without_service_tail","turns":[{"question":"行，这事先到这，我去赶地铁了","no_question":true,"max_chars":45,"must_not_match":"还有什么|需要帮助|去哪|为什么","dimensions":["pacing","naturalness"],"expectation":"自然收口，不追加邀请或追问"}]},
+    {"id":"formal_route_final","turns":[{"question":"正式需求：读取项目文件，检查活动奖励配置并生成完整检查报告。","kinds":["task"],"dimensions":["mode_accuracy"],"expectation":"正式任务通道保留"}]}
+  ],
+  "validation": [
+    {"id":"new_location","history":[{"user":"旅店地址记在蓝色便签里，车次记在黄色便签里。","reply":"好，地址和车次分开了。"}],"turns":[{"question":"车次在哪张来着","no_question":true,"must_match":"黄色|黄的","max_chars":35,"dimensions":["context_fit","pacing"],"expectation":"新对象里仍直接定位，不照抄开发集答案"}]},
+    {"id":"reasoned_choice","turns":[{"question":"咖啡店只卖外带，我想把宣传主句写成“坐一下午也没关系”，是不是不合适？","no_question":true,"must_match":"外带|座|堂食|坐|误解","max_chars":110,"dimensions":["context_fit","naturalness"],"expectation":"给当前事实上的理由，不恭维、不写整套营销方案"},{"question":"懂了，就改成“带走一杯好心情”，先这么定","no_question":true,"max_chars":45,"must_not_match":"还可以|建议|或者","dimensions":["preference_adaptation","pacing"],"expectation":"确定以后自然结束，不再推翻选择"}]},
+    {"id":"respond_to_own_question","history":[{"user":"你这边忙完了？","reply":"这边说完了，你呢？"}],"turns":[{"question":"我还在折腾那个破书架，一块板怎么都装反","no_question":true,"max_chars":80,"must_not_match":"咋啦|忙啥|先休息|别撑|今天到此|先别硬拧|倒回去对|建议你","dimensions":["context_fit","agency"],"expectation":"接住对自己问题的回答，不重启情绪问诊或主动展开修理建议"}]},
+    {"id":"specific_repair","history":[{"user":"这是我的手工小摆件","reply":"这款商品的设计具备良好的情绪价值。"}],"turns":[{"question":"别说得跟商品说明似的","no_question":true,"single_sentence":true,"no_future_promise":true,"max_chars":60,"must_not_match":"改成|以后|接下来|更合适|以下|[*][*]","dimensions":["repair","naturalness"],"expectation":"简短承认具体口吻问题，不交付示范或未来承诺"}]},
+    {"id":"fact_correction","history":[{"user":"刚从远处回来，累死了","reply":"开那么久的车确实累。"}],"turns":[{"question":"我坐高铁回来的，没开车","no_question":true,"max_chars":70,"must_not_match":"开车|驾驶|司机|油门","dimensions":["fact_grounding","repair"],"expectation":"收回擅自假定的交通方式，不再围绕旧假设展开"}]}
+  ]
+}
