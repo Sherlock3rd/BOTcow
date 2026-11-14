@@ -2,7 +2,7 @@
   "snapshot_date": "2026-11-14",
   "scope": "public source and sanitized deployment templates",
   "runtime_included": false,
-  "file_count": 144,
+  "file_count": 146,
   "files": [
     {
       "path": ".gitattributes",
@@ -18,6 +18,11 @@
       "path": "AGENTS.md",
       "bytes": 582,
       "sha256": "b08d4d9b3e8e8ebf309da8094d2a58297a5d90e85a7e7b044b201769ea8bce0e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3670,
+      "sha256": "3637f99bdf817ed907bbc906ba513e31aee832a0ad81f88c02bcc49725507195"
     },
     {
       "path": "assets/stickers/README.md",
@@ -90,14 +95,14 @@
       "sha256": "ade0d475b7f5109cc246bd7100d4cecaa2763ead5dfd229eaaa177f54bae656b"
     },
     {
-      "path": "docs/personas/whale-character.md",
-      "bytes": 28488,
-      "sha256": "ac5d5950cc0234a519e1271d7a43a4d372be9e6e799a4d4c054f5882d3a0e5ad"
-    },
-    {
       "path": "docs/personas/whale-LICENSE.txt",
       "bytes": 2517,
       "sha256": "900af425b7b22539550beb60f69ea3f58dc7aad6bd8d852d4a6da1c7928c47b3"
+    },
+    {
+      "path": "docs/personas/whale-character.md",
+      "bytes": 28488,
+      "sha256": "ac5d5950cc0234a519e1271d7a43a4d372be9e6e799a4d4c054f5882d3a0e5ad"
     },
     {
       "path": "docs/personas/whale-source.md",
@@ -123,6 +128,11 @@
       "path": "knowledge/assistant-core.md",
       "bytes": 893,
       "sha256": "505ba35a7de7a2920c810256bf02fdeeff98ab58f2c12373092edb885c720ab6"
+    },
+    {
+      "path": "mistakes/README.md",
+      "bytes": 827,
+      "sha256": "56fd721f965a1f03fabdd8294759fad1f82584f8fabee25f895d4deb36f85ab8"
     },
     {
       "path": "mistakes/bridge-autostart-cutover-while-worker-active.md",
@@ -200,6 +210,11 @@
       "sha256": "ac44f0ee43d89b27755724b49a6fee2210c7752b9ee2d5b50d41351aafd4cfe2"
     },
     {
+      "path": "mistakes/group-config-query-private-schedule-disclosure.md",
+      "bytes": 888,
+      "sha256": "c3469e8d9917f8bea2f838e45abe83e36b21da7c43663bb0d6370fbb0b80f1d0"
+    },
+    {
       "path": "mistakes/group-read-without-event-admission.md",
       "bytes": 2956,
       "sha256": "61e96d83687d5c57f0eb8ef474514118d80482c3d24278f0e5076b58c341d49e"
@@ -220,11 +235,6 @@
       "sha256": "1e4123179c6ecaeda0ccf060e78c9544fb7609a1eeada6bdee18db3a91db2c5c"
     },
     {
-      "path": "mistakes/README.md",
-      "bytes": 827,
-      "sha256": "56fd721f965a1f03fabdd8294759fad1f82584f8fabee25f895d4deb36f85ab8"
-    },
-    {
       "path": "mistakes/scheduled-meegle-auth-context.md",
       "bytes": 1016,
       "sha256": "8efda2152d241a09948bf81694641ee674004433c3f68d2aa0c95341850d56c5"
@@ -240,14 +250,9 @@
       "sha256": "369535e3020e449f09128397488956866aa035bce30a12b8b62ed09b74b3eb48"
     },
     {
-      "path": "README.md",
-      "bytes": 3670,
-      "sha256": "3637f99bdf817ed907bbc906ba513e31aee832a0ad81f88c02bcc49725507195"
-    },
-    {
       "path": "rules/rules.md",
-      "bytes": 1968,
-      "sha256": "852b160eeca53b8100737226ea9683398f614528aafde68f612de0f72ea45910"
+      "bytes": 2193,
+      "sha256": "80ae0b98f821b7bcda330e2aae3890f0ba3679d236d7cf11b50cb75c84637d32"
     },
     {
       "path": "scripts/assistant-profile.mjs",
@@ -470,6 +475,11 @@
       "sha256": "7a564c8c997acf79727422dee33fc2183172b8d60180ef52ab1a44b9ac5af33c"
     },
     {
+      "path": "scripts/group-schedule-privacy.test.mjs",
+      "bytes": 1437,
+      "sha256": "898bb11cc516a1e2247a4fce40a263d2c4c3a41ca304d6cb146996b067f814e8"
+    },
+    {
       "path": "scripts/install-bridge-autostart-task.ps1",
       "bytes": 1844,
       "sha256": "7b088d74501b62b226d53bc84538ed201d654caa4b6e8f8d1409fbfce67af85c"
@@ -606,8 +616,8 @@
     },
     {
       "path": "scripts/scoped-reply.mjs",
-      "bytes": 4942,
-      "sha256": "8976bb86f39890a8441100207a124330547361ef6a4f27d8961378d97acf9d82"
+      "bytes": 5909,
+      "sha256": "3d51070275fb8bc523483605ba69ca588be3e9b1c2c59f91b4fdb87f6697d0fa"
     },
     {
       "path": "scripts/send-overdue-alert-card.mjs",
@@ -691,8 +701,8 @@
     },
     {
       "path": "spec/assistant-operating-workflows-spec.md",
-      "bytes": 19565,
-      "sha256": "9a9387c7fe38011ae3e21a822641cfd7f1f2e5666ff8cf0139c23fef82e1b66e"
+      "bytes": 19965,
+      "sha256": "f7f99f8c3f9709bead8abf7643fefb1a720e448b4b1af00dd8dd582f8d86af9c"
     },
     {
       "path": "spec/feishu-cli-deployment-and-doc-ops-spec.md",

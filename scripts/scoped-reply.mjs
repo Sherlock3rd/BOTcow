@@ -6,8 +6,23 @@ import { memoryScope,digest } from "./memory-policy.mjs";
 import { withScopeLock } from "./memory-management.mjs";
 import { verifyContextEpoch,recordVerifiedReply,projectRecord } from "./context-builder.mjs";
 
+// Read current local targets at send time; never put these identifiers in errors.
+export function assertGroupSchedulePrivacy(event,spec,workflowPath=join(dirname(fileURLToPath(import.meta.url)),"../config/assistant-workflows.json")) {
+  if(event.chat_type!=="group") return;
+  let scheduling;
+  try {scheduling=JSON.parse(readFileSync(workflowPath,"utf8")).scheduling;}
+  catch {throw new Error("group_privacy_config_unavailable");}
+  if(!scheduling||typeof scheduling!=="object") throw new Error("group_privacy_config_unavailable");
+  let payload=JSON.stringify(spec);
+  try {payload=decodeURIComponent(payload);} catch { /* scan literal payload too */ }
+  const targets=[scheduling.url,scheduling.base_token,scheduling.table_id,scheduling.view_id]
+    .filter(value=>typeof value==="string"&&value.length>=8);
+  if(targets.some(value=>payload.includes(value))) throw new Error("private_schedule_not_allowed_in_group");
+}
+
 export function scopedReply(runtime,event,config,spec,im) {
   memoryScope(event,config);
+  assertGroupSchedulePrivacy(event,spec);
   if(!/^[a-zA-Z0-9_-]{1,40}$/.test(spec.part??"")||!Number.isInteger(spec.epoch)||
     !["text","interactive","file","image","post"].includes(spec.type)) throw new Error("invalid_reply_spec");
   if(spec.type==="text" ? typeof spec.content!=="string" : !spec.content||typeof spec.content!=="object") throw new Error("invalid_reply_content");
