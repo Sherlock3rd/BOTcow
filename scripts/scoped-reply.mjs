@@ -5,6 +5,7 @@ import { fileURLToPath,pathToFileURL } from "node:url";
 import { memoryScope,digest } from "./memory-policy.mjs";
 import { withScopeLock } from "./memory-management.mjs";
 import { verifyContextEpoch,recordVerifiedReply,projectRecord } from "./context-builder.mjs";
+import {readActive,readStop,taskWasStopped} from './task-control.mjs';
 
 // Read current local targets at send time; never put these identifiers in errors.
 export function assertGroupSchedulePrivacy(event,spec,workflowPath=join(dirname(fileURLToPath(import.meta.url)),"../config/assistant-workflows.json")) {
@@ -33,6 +34,10 @@ export function scopedReply(runtime,event,config,spec,im) {
     let receipt=existsSync(path)?JSON.parse(readFileSync(path,"utf8")):null;
     if(receipt?.payload_hash!==undefined&&receipt.payload_hash!==digest(JSON.stringify(spec))) throw new Error("reply_part_payload_changed");
     if(!receipt?.reply_id) {
+      const active=readActive(runtime);
+      if(taskWasStopped(runtime,event.message_id)||(active?.message_id===event.message_id&&
+        (['stopping','user_cancelled','task_timeout','worker_failed','supervisor_error'].includes(active.state)||readStop(runtime,active.run_id))))
+        throw new Error('task_stopped_before_reply');
       verifyContextEpoch(runtime,event,config,spec.epoch);
       if(receipt?.state==="sending") throw new Error("reply_send_uncertain_reconcile_required");
       receipt={message_id:event.message_id,payload_hash:digest(JSON.stringify(spec)),state:"sending",epoch:spec.epoch};

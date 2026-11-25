@@ -17,7 +17,7 @@ test("the single worker dispatches only its admitted event and supplies rules an
   for (const dir of ["scripts", "runtime", "config", "rules", "docs", "knowledge"]) mkdirSync(join(root, dir));
   for (const name of ["codex-event-wakeup", "bridge-queue", "bridge-eligibility", "worker-output", "greeting-reply",
     "chat-model", "chat-context", "chat-weather", "read-query", "assistant-profile", "bridge-mode", "bridge-reaction",
-    "memory-policy", "memory-store", "context-builder", "memory-management", "task-session-registry", "chat-stickers", "request-risk"]) {
+    "memory-policy", "memory-store", "context-builder", "memory-management", "task-session-registry", "chat-stickers", "request-risk", "task-control", "task-notice"]) {
     copyFileSync(join(scripts, name + ".mjs"), join(root, "scripts", name + ".mjs"));
   }
   const write = (file, value) => writeFileSync(join(root, file), value);

@@ -176,3 +176,21 @@ test("database projection outage after verified delivery can be replayed without
   const next=buildContext(dir,event("b","刚才说了什么"),config);
   assert.equal(next.history[0].reply,"已收到");
 });
+
+test("explicit follow-up to a stopped task starts a fresh thread without deleting history",t=>{
+  const dir=fixture(t),store=openMemory(dir),e=event('cancel-a','查询'),scope=store.scope(e,config);
+  projectRecord(dir,config,e);
+  const session=taskSession(store,scope,e,{},'v1');saveTaskThread(store,scope,session,'old-full-thread');
+  store.db.prepare("UPDATE tasks SET status='cancelled' WHERE scope=? AND id=?").run(scope.id,session.task_id);
+  const next=taskSession(store,scope,event('cancel-b','重新查询',{reply_to:'cancel-a'}),{},'v1');
+  assert.equal(next.thread_id,null);assert.equal(next.task_id,session.task_id);
+  assert.ok(store.recent(scope).some(r=>r.message_id==='cancel-a'));store.close();
+});
+
+test("cancel fence prevents a new reply even after another task becomes active",t=>{
+  const dir=fixture(t),e=event('stopped','查询'),ctx=buildContext(dir,e,config);let sends=0;
+  writeFileSync(join(dir,'blocked.ndjson'),JSON.stringify({message_id:e.message_id,status:'blocked',error_type:'user_cancelled'})+'\n');
+  writeFileSync(join(dir,'active-task.json'),JSON.stringify({message_id:'another',run_id:'new',state:'running'}));
+  assert.throws(()=>scopedReply(dir,e,config,{part:'answer',epoch:ctx.scope_epoch,type:'text',content:'late'},()=>{sends++;}),/task_stopped/);
+  assert.equal(sends,0);
+});

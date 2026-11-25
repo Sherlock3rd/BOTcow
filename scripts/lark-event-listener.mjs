@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { eligibleMessage, usesChatWorker } from "./bridge-eligibility.mjs";
 import { applyMembership, membershipKeys } from "./group-membership.mjs";
+import { stopCommand } from "./task-control.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const runtimeDir = join(root, "runtime");
@@ -177,7 +178,10 @@ function startConsumer() {
         `${JSON.stringify({ captured_at: timestamp(), ...event })}\n`,
         "utf8",
       );
-      if (eligible(event)) startWakeup(usesChatWorker(event, config) ? greetingWorker : taskWorker);
+      if(stopCommand(event,config)) {
+        const controller=spawn(process.execPath,[join(root,'scripts/handle-task-control.mjs'),event.message_id],{cwd:root,windowsHide:true,stdio:'ignore'});
+        controller.on('error',()=>log('task control spawn failed'));
+      } else if (eligible(event)) startWakeup(usesChatWorker(event, config) ? greetingWorker : taskWorker);
       writeStatus("ready", {
         event_key: config.event_key,
         last_event_at: timestamp(),

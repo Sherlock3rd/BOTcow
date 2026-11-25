@@ -25,10 +25,11 @@ export function taskSession(store,scope,event,context,profileVersion,rotationDay
     // A referenced follow-up may resume a task which was already settled by a
     // previous DONE/mark. Make the lifecycle explicit while this message is in
     // flight; bridge-queue settles it again only after delivery is verified.
+    const priorStatus=db.prepare("SELECT status FROM tasks WHERE scope=? AND id=?").get(scope.id,taskId)?.status;
     db.prepare("UPDATE tasks SET status='active' WHERE scope=? AND id=? AND epoch=?")
       .run(scope.id,taskId,epoch);
     const row=db.prepare("SELECT * FROM threads WHERE scope=? AND task_id=?").get(scope.id,taskId);
-    const valid=row&&row.epoch===epoch&&row.profile_version===profileVersion&&Date.now()-Date.parse(row.started_at)<rotationDays*86400000;
+    const valid=!['blocked','cancelled'].includes(priorStatus)&&row&&row.epoch===epoch&&row.profile_version===profileVersion&&Date.now()-Date.parse(row.started_at)<rotationDays*86400000;
     return {task_id:taskId,thread_id:valid?row.thread_id:null,epoch,profile_version:profileVersion};
   });
 }

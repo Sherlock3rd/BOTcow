@@ -1,8 +1,8 @@
 {
-  "snapshot_date": "2026-11-14",
+  "snapshot_date": "2026-11-25",
   "scope": "public source and sanitized deployment templates",
   "runtime_included": false,
-  "file_count": 146,
+  "file_count": 152,
   "files": [
     {
       "path": ".gitattributes",
@@ -251,8 +251,8 @@
     },
     {
       "path": "rules/rules.md",
-      "bytes": 2193,
-      "sha256": "80ae0b98f821b7bcda330e2aae3890f0ba3679d236d7cf11b50cb75c84637d32"
+      "bytes": 2480,
+      "sha256": "0b49473f48e91ebe3678974f306a0d9a8736f1fb0b4a4cce0fa423ccd037e205"
     },
     {
       "path": "scripts/assistant-profile.mjs",
@@ -286,8 +286,8 @@
     },
     {
       "path": "scripts/bridge-queue.mjs",
-      "bytes": 7772,
-      "sha256": "7528f6d3b7b7a5a8351dd608db1ab66cfb2848c1d90e4fff8daa1f80a2259f08"
+      "bytes": 7851,
+      "sha256": "4b9a1ec6ce2bf5c4cef664610d77ef41600fdad7fa43e13caf1d67fa9a8646e0"
     },
     {
       "path": "scripts/bridge-reaction.mjs",
@@ -366,13 +366,13 @@
     },
     {
       "path": "scripts/codex-event-wakeup.mjs",
-      "bytes": 31786,
-      "sha256": "dc7acf6563309f7cddf95350921e2c4c2922f043e5db4365e7ae814c7e8887d3"
+      "bytes": 34138,
+      "sha256": "3b95ed0370a01c3e18c3a285c6134fec8861fc0da28bd4189daff4eab9f123d6"
     },
     {
       "path": "scripts/codex-event-wakeup.test.mjs",
-      "bytes": 6129,
-      "sha256": "a8c16dda8d196ca775786304831d59ca3972cbfaae429624b165830ddaeeddb0"
+      "bytes": 6160,
+      "sha256": "d85a0b784b2546d62e335a5055a7bb8a86773597c4464183ffc918ddbecfc7f3"
     },
     {
       "path": "scripts/context-builder.mjs",
@@ -381,8 +381,8 @@
     },
     {
       "path": "scripts/conversation-modes.test.mjs",
-      "bytes": 16561,
-      "sha256": "8c8245d2ece02017b944ded79b2722484c236aa760cfe183d636744c256b3f69"
+      "bytes": 19731,
+      "sha256": "a4c5c42dda6be66198ff9519db4c29f6fa6f5a8e29090c6defa04fd5958217eb"
     },
     {
       "path": "scripts/create-schedule-requirement.mjs",
@@ -496,8 +496,8 @@
     },
     {
       "path": "scripts/lark-event-listener.mjs",
-      "bytes": 10118,
-      "sha256": "891b79c5a9255617e59db4ce023ba8c43bbe8b29001de9fe81938d4a6c9bf9a3"
+      "bytes": 10439,
+      "sha256": "d251190c11efbe1c7a96ceb8d3b82ea8b2d8039141df412ba54d46b458587b3a"
     },
     {
       "path": "scripts/lingo-knowledge.mjs",
@@ -526,13 +526,13 @@
     },
     {
       "path": "scripts/membership-listener.test.mjs",
-      "bytes": 3977,
-      "sha256": "e954c6b8cac96c92e56731afcea289ad4671d5f41e5afcd3da151fe43e9df7e3"
+      "bytes": 3996,
+      "sha256": "b3f3cc0ccc0aae66ff0532c33e1b5b0abdd2c4ba2aa24cceefabf4eec82a821f"
     },
     {
       "path": "scripts/memory-architecture.test.mjs",
-      "bytes": 13189,
-      "sha256": "6dce4e771bc5c0f1424f4a8adf8850666755fa17138fc1ebb2ab08a6be884fdc"
+      "bytes": 14512,
+      "sha256": "ba831e3dc2abbae12c6b345e41fa597221dfafe7c91d6e3c3d0749e28481af8f"
     },
     {
       "path": "scripts/memory-command.mjs",
@@ -616,8 +616,8 @@
     },
     {
       "path": "scripts/scoped-reply.mjs",
-      "bytes": 5909,
-      "sha256": "3d51070275fb8bc523483605ba69ca588be3e9b1c2c59f91b4fdb87f6697d0fa"
+      "bytes": 6314,
+      "sha256": "b3da142520776dbbf39d280df5bb264a56de17df7f737681622aebd9259832d7"
     },
     {
       "path": "scripts/send-overdue-alert-card.mjs",
@@ -641,8 +641,8 @@
     },
     {
       "path": "scripts/task-session-registry.mjs",
-      "bytes": 4278,
-      "sha256": "6fa9bf05c1cb913c8a3c408b7f647760aa5acfd487723d1cbd39ca5b7d73b215"
+      "bytes": 4440,
+      "sha256": "fb9c6cd46a4202393ecaf2e8df2bc99f47bbf2adcf1958e6e3ff26af2a2550da"
     },
     {
       "path": "scripts/uninstall-bridge-autostart-task.ps1",
@@ -651,8 +651,8 @@
     },
     {
       "path": "scripts/worker-output.mjs",
-      "bytes": 2090,
-      "sha256": "4b2211b42b37e6c31e58ec9a0a198575c31422ab249b8ade5e0821c6eba9ff84"
+      "bytes": 3935,
+      "sha256": "f518513c53b59f489a22876a4baa0e891c31cd319475fe725404c311c5355040"
     },
     {
       "path": "scripts/worker-output.test.mjs",
@@ -701,8 +701,8 @@
     },
     {
       "path": "spec/assistant-operating-workflows-spec.md",
-      "bytes": 19965,
-      "sha256": "f7f99f8c3f9709bead8abf7643fefb1a720e448b4b1af00dd8dd582f8d86af9c"
+      "bytes": 20872,
+      "sha256": "6ae10eca212fda0751c1016391fd95f18d3125b699d02d3d13f89945d950be09"
     },
     {
       "path": "spec/feishu-cli-deployment-and-doc-ops-spec.md",
@@ -733,6 +733,36 @@
       "path": "spec/rules-bootstrap-spec.md",
       "bytes": 2861,
       "sha256": "c139fb1e4b638ae7a9bd5d33c806a1b115ddaa7d8177f5ff77d3265010db8f84"
+    },
+    {
+      "path": "scripts/task-control.mjs",
+      "bytes": 4983,
+      "sha256": "052e0cbf203a1e0c5c31ddcfaf47710b0835a29fc88d35d512326d02ef839c18"
+    },
+    {
+      "path": "scripts/task-notice.mjs",
+      "bytes": 1961,
+      "sha256": "c24839ab13b8cc5c909b20fd48cd2c01347e473e02dded31ee5d4b826f9c0199"
+    },
+    {
+      "path": "scripts/handle-task-control.mjs",
+      "bytes": 1459,
+      "sha256": "52194032cd0432bf085178d264955383be9bcde3482d44fce8486def94fcbdc3"
+    },
+    {
+      "path": "scripts/task-control.test.mjs",
+      "bytes": 3817,
+      "sha256": "b1ba06431384a36bdfe0fdad4f86d167bad43a8f42f81e83405c31b8db3cd67f"
+    },
+    {
+      "path": "spec/task-timeout-and-stop-spec.md",
+      "bytes": 2111,
+      "sha256": "3a95e1ff771439c69b077ee8c18522718e164b83e02119b0c9c9c597c81dfa9f"
+    },
+    {
+      "path": "mistakes/task-timeout-silent-retry.md",
+      "bytes": 644,
+      "sha256": "125c9b1e6b883d1b95c56ed1ff4552559fcc0ad03c651bfcc6f17f0c5c1bd174"
     }
   ]
 }

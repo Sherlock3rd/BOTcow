@@ -9,10 +9,12 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync, spawnSync, spawn } from "node:child_process";
+import { randomUUID } from 'node:crypto';
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { runWithOutputFiles, readOutputTail, readStartedThreadId } from "./worker-output.mjs";
+import { runSupervised, readOutputTail, readStartedThreadId } from "./worker-output.mjs";
+import { readActive,writeActive,readStop,blockTask,notice } from './task-control.mjs';
 import { deliverGreeting } from "./greeting-reply.mjs";
 import { greetingReply, isPublicGroup, isOwnerSender } from "./bridge-eligibility.mjs";
 import { pending as queuePending } from "./bridge-queue.mjs";
@@ -393,7 +395,7 @@ function persistRotatedThread(threadId, rotatedAt) {
   writeFileSync(bridgeConfigPath, `${JSON.stringify(nextConfig, null, 2)}\n`, "utf8");
 }
 
-function runCodex(event) {
+async function runCodex(event) {
   if(!isOwnerSender(event,config))throw new Error("business_executor_owner_only");
   let threadId = wakeupConfig.thread_id, session=null, scopedContext=null;
   if(config.memory?.task_isolation) {
@@ -466,14 +468,28 @@ function runCodex(event) {
   log(`starting Codex for message_id=${event.message_id} mode=${mode} model=${wakeupConfig.model} effort=${effort} rotate=${rotate}${preparationTiming}`);
   writeStatus("running", { message_id: event.message_id, executable, rotate, stdout_path: stdoutPath, stderr_path: stderrPath });
 
-  const result = runWithOutputFiles(executable, args, {
+  const runId=randomUUID();
+  const active={run_id:runId,message_id:event.message_id,chat_id:event.chat_id,sender_id:event.sender_id,
+    worker_pid:process.pid,state:'running',started_at:timestamp()};
+  writeActive(runtimeDir,active);
+  const result = await runSupervised(executable, args, {
     cwd: root,
     env: process.env,
     input: prompt,
     encoding: "utf8",
     windowsHide: true,
     timeout: 30 * 60 * 1000,
-  }, stdoutPath, stderrPath);
+  }, stdoutPath, stderrPath, {
+    warningMs:wakeupConfig.warning_ms??120000,timeoutMs:wakeupConfig.timeout_ms??600000,
+    cancelled:()=>Boolean(readStop(runtimeDir,runId)),
+    onStopping:reason=>{blockTask(runtimeDir,event,reason);writeActive(runtimeDir,{...active,state:'stopping',reason});},
+    onWarning:()=>{
+      const helper=spawn(process.execPath,[join(root,'scripts/task-notice.mjs'),event.message_id,'slow'],{cwd:root,windowsHide:true,stdio:'ignore'});
+      helper.on('error',()=>log('task warning delivery failed'));
+    }
+  });
+  writeActive(runtimeDir,{...active,state:result.stopReason??(result.status===0?'finished':'worker_failed'),ended_at:timestamp()});
+  if(result.stopReason) throw Object.assign(new Error(result.stopReason),{taskReason:result.stopReason});
 
   if (rotate) {
     const newThreadId = readStartedThreadId(stdoutPath);
@@ -547,7 +563,26 @@ async function main() {
           log(`handing to task worker message_id=${event.message_id} reason=${reason}`);
           process.stdout.write("greeting recovery required\n");
         }
-      } else runCodex(event);
+      } else {
+        try {
+          await runCodex(event);
+          if(readPending().some(item=>item.message_id===event.message_id)) throw Error('task_unfinished');
+        } catch(error) {
+          const reason=error.taskReason??'worker_failed';
+          blockTask(runtimeDir,event,reason);
+          const active=readActive(runtimeDir);
+          if(active?.message_id===event.message_id&&active.worker_pid===process.pid)
+            writeActive(runtimeDir,{...active,state:reason,ended_at:timestamp()});
+          try { if(config.memory?.task_isolation) {
+            const store=openMemory(runtimeDir);
+            try {store.db.prepare("UPDATE tasks SET status=? WHERE (scope,id) IN (SELECT scope,task_id FROM task_messages WHERE message_id=?)")
+              .run(reason==='user_cancelled'?'cancelled':'blocked',event.message_id);} finally {store.close();}
+          }} catch {log('task registry settlement failed');}
+          try {execFileSync(process.execPath,[join(root,'scripts/task-notice.mjs'),event.message_id,reason],{cwd:root,windowsHide:true,timeout:35000,stdio:'ignore'});}
+          catch {log('task failure notice not verified');}
+          log(`task isolated message_id=${event.message_id} reason=${reason}`);
+        }
+      }
       lastMessageId = event.message_id;
       pending = readPending();
       if (pending.some((item) => item.message_id === event.message_id)) {

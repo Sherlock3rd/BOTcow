@@ -12,7 +12,7 @@ test('listener consumes membership separately, wakes the live lane and never log
   const root=mkdtempSync(join(tmpdir(),'botcow-listener-'));
   for(const p of ['scripts','runtime','config'])mkdirSync(join(root,p));
   const scripts=dirname(fileURLToPath(import.meta.url));
-  for(const p of ['lark-event-listener.mjs','bridge-eligibility.mjs','group-membership.mjs'])copyFileSync(join(scripts,p),join(root,'scripts',p));
+  for(const p of ['lark-event-listener.mjs','bridge-eligibility.mjs','group-membership.mjs','task-control.mjs'])copyFileSync(join(scripts,p),join(root,'scripts',p));
   const at=Date.now();
   writeFileSync(join(root,'config/bridge.json'),JSON.stringify({profile:'fixture',event_key:'im.message.receive_v1',
     allowed_sender_ids:['ou_owner'],allowed_group_chat_ids:[],allowed_chat_types:['group'],allowed_message_types:['text'],

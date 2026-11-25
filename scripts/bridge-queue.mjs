@@ -5,6 +5,7 @@ import { eligibleMessage, usesChatWorker, isPublicGroup, isOwnerSender } from ".
 import { modeRecords } from "./bridge-mode.mjs";
 import { openMemory } from "./context-builder.mjs";
 import { completeTaskForMessage } from "./task-session-registry.mjs";
+import { stopCommand } from "./task-control.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const runtimeDir = join(root, "runtime");
@@ -54,7 +55,7 @@ export function pending(lane) {
     if(guest&&(!Number.isFinite(Date.parse(config.group_public?.enabled_at))||!Number.isFinite(Date.parse(event.captured_at))||
       Date.parse(event.captured_at)<Date.parse(config.group_public.enabled_at)))continue;
     if (
-      !eligibleMessage(event, config) ||
+      !eligibleMessage(event, config) || stopCommand(event,config) ||
       processed.has(event.message_id) ||
       blocked.get(event.message_id)?.status === "blocked" ||
       seen.has(event.message_id)

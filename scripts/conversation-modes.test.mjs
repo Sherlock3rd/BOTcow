@@ -9,13 +9,13 @@ import { setTimeout as delay } from "node:timers/promises";
 import { test } from "node:test";
 
 const scripts = dirname(fileURLToPath(import.meta.url));
-function fixture(t) {
+function fixture(t,beforeCleanup=async()=>{}) {
   const root = mkdtempSync(join(tmpdir(), "botcow-modes-"));
-  t.after(() => { assert.equal(dirname(resolve(root)), resolve(tmpdir())); rmSync(root, { recursive: true, force: true }); });
+  t.after(async() => { await beforeCleanup(); assert.equal(dirname(resolve(root)), resolve(tmpdir())); rmSync(root, { recursive: true, force: true }); });
   for (const dir of ["scripts", "runtime", "config", "rules", "docs", "knowledge"]) mkdirSync(join(root, dir));
   for (const name of ["codex-event-wakeup", "bridge-queue", "bridge-eligibility", "worker-output", "greeting-reply",
     "chat-context", "chat-weather", "read-query", "assistant-profile", "bridge-mode", "bridge-reaction", "lark-event-listener", "group-membership",
-    "memory-policy", "memory-store", "context-builder", "memory-management", "task-session-registry", "chat-stickers", "request-risk"])
+    "memory-policy", "memory-store", "context-builder", "memory-management", "task-session-registry", "chat-stickers", "request-risk", "task-control", "task-notice", "handle-task-control"])
     copyFileSync(join(scripts, name + ".mjs"), join(root, "scripts", name + ".mjs"));
   const write = (name, value) => writeFileSync(join(root, name), value);
   const config = { profile: "test", chat_model: "fixture-chat", chat_reasoning_effort: "low",
@@ -225,4 +225,37 @@ test("listener receives admitted text without creating any early reaction", asyn
     f.write("runtime/stop.requested", "stop");
     await done;
   }
+});
+
+test("failed task is isolated once, notice verified, next task completes without replay",t=>{
+  const f=fixture(t);
+  const normal=readFileSync(join(f.root,"exec"),"utf8");
+  f.write("exec",normal.replace("const mode=prompt.match", "if(event.message_id==='om_fail'){process.exit(1);} const mode=prompt.match"));
+  f.write("runtime/inbox.ndjson",[event("fail","失败测试"),event("next","下一任务")].map(JSON.stringify).join('\n'));
+  f.write("runtime/greeting-fallback.ndjson",[{message_id:"om_fail",reason:"task"},{message_id:"om_next",reason:"task"}].map(JSON.stringify).join('\n'));
+  f.run("scripts/codex-event-wakeup.mjs");
+  assert.equal(f.rows("blocked.ndjson").find(r=>r.message_id==='om_fail').error_type,'worker_failed');
+  assert.deepEqual(f.rows("processed.ndjson").map(r=>r.message_id),['om_next']);
+  assert.equal(f.rows("mock-replies.ndjson").filter(r=>r.reply_to==='om_fail').length,1);
+  const count=f.rows("worker-inputs.ndjson").length;
+  f.run("scripts/codex-event-wakeup.mjs");
+  assert.equal(f.rows("worker-inputs.ndjson").length,count);
+  assert.equal(JSON.parse(f.run("scripts/bridge-queue.mjs","pending")).pending.length,0);
+});
+
+test("listener handles stop while model is silent and does not route control into either model",async t=>{
+  let proc;
+  const f=fixture(t,async()=>{if(proc){f.write('runtime/stop.requested','stop');await until(()=>proc.exitCode!==null);}});
+  f.write("exec",`const fs=require('node:fs');fs.readFileSync(0,'utf8');console.log(JSON.stringify({type:'thread.started',thread_id:'hung'}));setInterval(()=>{},1000);`);
+  f.write("event",`const fs=require('node:fs');process.stderr.write('[event] ready event_key=im.message.receive_v1\\n');let n=0;setInterval(()=>{const p='runtime/emit'+n+'.json';if(fs.existsSync(p)){process.stdout.write(fs.readFileSync(p,'utf8')+'\\n');n++;}},30);process.stdin.resume();process.stdin.on('end',()=>process.exit(0));`);
+  proc=spawn(process.execPath,['scripts/lark-event-listener.mjs'],{cwd:f.root,env:f.env,windowsHide:true,stdio:'ignore'});
+  const until=async check=>{const end=Date.now()+15000;while(Date.now()<end){try{if(check())return;}catch{}await delay(30);}throw Error('control integration timeout');};
+  f.write('runtime/emit0.json',JSON.stringify(event('busy','评审这个方案')));
+  await until(()=>existsSync(join(f.root,'runtime/active-task.json'))&&JSON.parse(readFileSync(join(f.root,'runtime/active-task.json'),'utf8')).state==='running');
+  f.write('runtime/emit1.json',JSON.stringify(event('stop','停止当前任务')));
+  await until(()=>f.rows('blocked.ndjson').some(r=>r.message_id==='om_busy'&&r.error_type==='user_cancelled'));
+  await until(()=>f.rows('mock-replies.ndjson').some(r=>r.reply_to==='om_busy'&&r.content.includes('已停止')));
+  assert.ok(f.rows('mock-replies.ndjson').some(r=>r.reply_to==='om_stop'&&r.content.includes('收到停止请求')));
+  assert.ok(!f.rows('model-inputs.ndjson').some(r=>r.question==='停止当前任务'));
+  assert.equal(JSON.parse(f.run('scripts/bridge-queue.mjs','pending')).pending.length,0);
 });
